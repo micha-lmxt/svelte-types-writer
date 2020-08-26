@@ -21,8 +21,10 @@
     "fs-extra": "^9.0.1",
     "glob": "^7.1.6",
     "magic-string": "^0.25.7",
-    "svelte-typed-component": "^1.0.0",
     "svelte2tsx": "^0.1.86",
     "typescript": "^3.9.7"
+  },
+  "devDependencies": {
+    "svelte-typed-component": "^1.1.0"
   }
 }

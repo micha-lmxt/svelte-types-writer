@@ -38,7 +38,9 @@ const readFiles = (files: string[], workdir: string) => {
     }
     return res;
 }
+
 export const processFiles = (files: string[], libs: string[], outfolder: string) => {
+
     if (files.length === 0) {
         return "no files";
     }
@@ -76,7 +78,7 @@ export const processFiles = (files: string[], libs: string[], outfolder: string)
 }
 export const processText = (files: { text: string, name: string, dir: string, svelte:boolean }[], libs: string[], workdir: string) => {
 
-    // process the .svelte file with svelte2tsx
+    // process the .svelte file with svelte2tsx, but only if they have .svelte extension
     const tsx = files.map(v => {
         if (!v.svelte){
             return Object.assign({svelte:false},v);
@@ -90,8 +92,6 @@ export const processText = (files: { text: string, name: string, dir: string, sv
     );
 
 
-
-    //fs.writeFileSync(path.join(workdir,"extratypes.d.ts"), extratypes);
 
     const filenames = tsx.map(v => {
         let filename = path.join(workdir, v.dir, v.name);
@@ -126,11 +126,15 @@ export const processText = (files: { text: string, name: string, dir: string, sv
 
     // compile tsx file with tsc but only further process declaration file
     const ret = new Promise<{ text: string, name: string }[]>((resolve, reject) => {
+        let shims = "./node_modules/svelte2tsx/svelte-shims.d.ts";
+        if (!fs.existsSync(shims)){
+            shims = "./node_modules/svelte-type-writer/node_modules/svelte2tsx/svelte-shims.d.ts";
+        }
         const tscOptions = ["--emitDeclarationOnly", "--declaration"]
             .concat(filenames.map(v => v.filename + ".tsx"))
             //.concat(["extratypes.d.ts"])
             .concat(libs.map(v => path.join(workdir, v)))
-            .concat(["node_modules/svelte2tsx/svelte-shims.d.ts"]);
+            .concat([shims]);
         console.log(tscOptions);
         const sp = spawn("tsc", tscOptions, { cwd: "./" });
 
@@ -150,7 +154,7 @@ export const processText = (files: { text: string, name: string, dir: string, sv
                     const types = fs.readFileSync(dtsfile, { encoding: "utf-8" });
 
                     // restructure file
-                    const adjtypes = types; //processDTS(types);
+                    const adjtypes = processDTS(types);
 
                     // clean up
 
@@ -179,6 +183,14 @@ declare class SvelteTypedComponent<P,E,S>{
 `;
 
 const processDTS = (file: string) => {
+
+    
+    if (file.includes("SvelteAllProps")){
+        const s = file.split("}");
+        return s[0] + ", SvelteAllProps }" + s.slice(1).join("}");
+    }
+    return file;
+    /*
     const s = file.split("__SvelteComponent_");
     const name = s[0].replace("declare const ", "");
     const propsEvtsSlot = s[1].replace("_base: {", "").split("} & {");
@@ -219,7 +231,7 @@ const processDTS = (file: string) => {
         inner.replace(/\n/g, "\n    ") +
         "\n}\n"
 
-
+*/
 
 
 }
@@ -230,15 +242,15 @@ const preprocessTsx = (text: string, name: string) => {
     const b = a[1].split("createSvelte2TsxComponent");
     const c1 = b[1].split("{");
     const c = c1.slice(0, c1.length - 1).join("{");
-    return "import {SvelteTypedComponent} from 'svelte-typed-component'\n" +
-        a[0] +
-        "export default class " + name + " extends SvelteTypedComponent<" + name + "Props," + name + "Events," + name + "Slots>{}" +
-        "const r = " + c + "();\n" +
-        "const _" + name + "Props = r.props;\n" +
-        "const _" + name + "Events = r.events;\n" +
-        "const _" + name + "Slots = r.slots;\n" +
-        "export type " + name + "Props = typeof _" + name + "Props;\n" +
-        "export type " + name + "Events = typeof _" + name + "Events;\n" +
-        "export type " + name + "Slots = typeof _" + name + "Slots;\n";
+    const main = a[0] +
+    "export default class " + name + " extends SvelteTypedComponent<" + name + "Props," + name + "Events," + name + "Slots>{}" +
+    "const r = " + c + "();\n" +
+    "const _" + name + "Props = r.props;\n" +
+    "const _" + name + "Events = r.events;\n" +
+    "const _" + name + "Slots = r.slots;\n" +
+    "export type " + name + "Props = typeof _" + name + "Props;\n" +
+    "export type " + name + "Events = typeof _" + name + "Events;\n" +
+    "export type " + name + "Slots = typeof _" + name + "Slots;\n";
+    return "import {SvelteTypedComponent} from 'svelte-typed-component'\n" + main;
 
 }

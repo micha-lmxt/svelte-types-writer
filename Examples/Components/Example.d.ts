@@ -1,4 +1,4 @@
-import { SvelteTypedComponent } from 'svelte-typed-component';
+import { SvelteTypedComponent , SvelteAllProps } from 'svelte-typed-component';
 /**
  * Here's some documentation for this component. It will show up on hover for
  * JavaScript/TypeScript projects using a LSP-compatible editor such as VSCode or
@@ -17,7 +17,7 @@ declare const _ExampleProps: {
     a?: string;
     b?: string;
     c: number;
-};
+} & SvelteAllProps;
 declare const _ExampleEvents: {
     click: MouseEvent;
 };

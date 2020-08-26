@@ -9,7 +9,7 @@
  - JSDoc/TSDoc will be respected by LSP-compatible editors.
  - Indentation will be respected as much as possible.
 -->
-<script lang="ts"> 
+<script> 
   import { TTT } from "../examplement";
   import Example3 from "../Example3.svelte";
 
@@ -23,11 +23,13 @@
   /** abc */
   export let c : number;
   let u = c + 2;
+  let rr="";
   $: u = u * t;
+  $: rr = $$props.class;
 </script>
 
 <h1 on:click>{a}</h1>
 <button class={b} on:click>{c}</button>
 {r.join("v")}
-<Example3 a></Example3>
+<Example3 a>rr</Example3>
 <div />

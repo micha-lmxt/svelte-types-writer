@@ -14,4 +14,3 @@
   </script>
   
   <Example on:click>{c}</Example>
-00
