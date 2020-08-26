@@ -12,6 +12,7 @@ for (let v of args){
         lib = true;
         continue;
     }
+
     if (v==="--out"){
         outfolder="will get";
         continue;
@@ -27,6 +28,9 @@ for (let v of args){
     }
 }
 
+if (outfolder === "will get"){
+    outfolder = "none";
+}
 processFiles(files,libs,outfolder);
 
 
