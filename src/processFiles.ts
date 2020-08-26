@@ -47,13 +47,29 @@ export const processFiles = (files: string[], libs: string[], outfolder: string)
 
     const f = readFiles(files, workdir);
     const texts = processText(f, libs, workdir);
-    const retfold = outfolder === "none" ? "./" : outfolder;
+    if (outfolder!=="none"){
+        if (!fs.existsSync(outfolder)){
+            fs.mkdirSync(outfolder,{recursive:true})
+        }
+    }
 
+    const currpath = path.resolve("./");
     texts.then(v => {
         v.forEach(w => {
+            if (outfolder === "none"){
+                console.log("Write file: " + w.name);
+                fs.writeFileSync(w.name, w.text);
+            }else{
+                const full = path.relative(currpath, w.name);
+                const file = path.join(outfolder,full)
+                const dir = path.dirname(file);
+                if (!fs.existsSync(dir)){
+                    fs.mkdirSync(dir);
+                }
+                console.log("Write file: " + file);
+                fs.writeFileSync(file, w.text);
+            }
 
-            console.log("Write file: " + w.name);
-            fs.writeFileSync(w.name, w.text);
 
         })
     })
