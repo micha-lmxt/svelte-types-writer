@@ -17,9 +17,11 @@
   
   export let t = 21;
   export let r = TTT(666);
-
+  
   export let a = "abc";
   export let b = x;
+  export let bol = false;
+  export let tru=true
   /** abc */
   export let c : number;
   let u = c + 2;
@@ -31,5 +33,5 @@
 <h1 on:click>{a}</h1>
 <button class={b} on:click>{c}</button>
 {r.join("v")}
-<Example3 a>rr</Example3>
+<Example3 on:*>rr</Example3>
 <div />

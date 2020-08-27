@@ -3,6 +3,7 @@
     import {Example2} from "./Components";
     import {Example} from "./Components";
     export let abc: "a"|"b"|"c";
+    export const x = true;
 
 </script>
 

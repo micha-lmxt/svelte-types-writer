@@ -16,10 +16,13 @@ declare const _ExampleProps: {
     r?: any;
     a?: string;
     b?: string;
+    bol?: boolean;
+    tru?: boolean;
     c: number;
 } & SvelteAllProps;
 declare const _ExampleEvents: {
     click: MouseEvent;
+    '*': any;
 };
 declare const _ExampleSlots: {};
 export declare type ExampleProps = typeof _ExampleProps;

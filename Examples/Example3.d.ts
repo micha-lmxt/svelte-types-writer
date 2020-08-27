@@ -1,5 +1,6 @@
 import { SvelteTypedComponent } from 'svelte-typed-component';
 export default class Example3 extends SvelteTypedComponent<Example3Props, Example3Events, Example3Slots> {
+    get x(): boolean;
 }
 declare const _Example3Props: {
     abc: "a" | "b" | "c";

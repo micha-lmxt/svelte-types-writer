@@ -185,28 +185,30 @@ declare class SvelteTypedComponent<P,E,S>{
 `;
 
 const processDTS = (file: string) => {
-
+    const file1 = file.replace(/: false;/g,": boolean;").replace(/: true;/g,": boolean;");
     
-    if (file.includes("SvelteAllProps")){
-        const s = file.split("}");
+    if (file1.includes("SvelteAllProps")){
+        const s = file1.split("}");
         return s[0] + ", SvelteAllProps }" + s.slice(1).join("}");
     }
-    return file;
+    // false and true to boolean
+    return file1;
     
 }
 
 
 const preprocessTsx = (text: string, name: string) => {
+
     const a = text.split("export default class");
     const b = a[1].split("createSvelte2TsxComponent");
     const c1 = b[1].split("{");
-    const c = c1.slice(0, c1.length - 1).join("{");
+    const c2 = "{" + c1.slice(1).join("{");
     // fix if on:* is used;
-    const maintsx = a[0].replace(/on*=/g,"onany=");
+    const maintsx = a[0].replace(/on\*=/g,"onany=");
 
     const main = maintsx +
-    "export default class " + name + " extends SvelteTypedComponent<" + name + "Props," + name + "Events," + name + "Slots>{}" +
-    "const r = " + c + "();\n" +
+    "export default class " + name + " extends SvelteTypedComponent<" + name + "Props," + name + "Events," + name + "Slots>"+ c2+";\n" +
+    "const r = " + c1[0] + "();\n" +
     "const _" + name + "Props = r.props;\n" +
     "const _" + name + "Events = r.events;\n" +
     "const _" + name + "Slots = r.slots;\n" +
