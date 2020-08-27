@@ -6,8 +6,12 @@ const files : string[] = [];
 const libs : string[] = [];
 let lib = false;
 let outfolder = "none";
+let debug=false;
 for (let v of args){
     
+    if (v==="--debug"){
+        debug=true;
+    }
     if (v==="--libs"){
         lib = true;
         continue;
@@ -31,6 +35,6 @@ for (let v of args){
 if (outfolder === "will get"){
     outfolder = "none";
 }
-processFiles(files,libs,outfolder);
+processFiles(files,libs,outfolder,debug);
 
 

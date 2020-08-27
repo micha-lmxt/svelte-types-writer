@@ -39,7 +39,7 @@ const readFiles = (files: string[], workdir: string) => {
     return res;
 }
 
-export const processFiles = (files: string[], libs: string[], outfolder: string) => {
+export const processFiles = (files: string[], libs: string[], outfolder: string,debug=false) => {
 
     if (files.length === 0) {
         return "no files";
@@ -48,7 +48,7 @@ export const processFiles = (files: string[], libs: string[], outfolder: string)
     const workdir = fs.mkdtempSync("./");
 
     const f = readFiles(files, workdir);
-    const texts = processText(f, libs, workdir);
+    const texts = processText(f, libs, workdir,debug);
     if (outfolder!=="none"){
         if (!fs.existsSync(outfolder)){
             fs.mkdirSync(outfolder,{recursive:true})
@@ -76,7 +76,7 @@ export const processFiles = (files: string[], libs: string[], outfolder: string)
         })
     })
 }
-export const processText = (files: { text: string, name: string, dir: string, svelte:boolean }[], libs: string[], workdir: string) => {
+export const processText = (files: { text: string, name: string, dir: string, svelte:boolean }[], libs: string[], workdir: string,debug=false) => {
 
     // process the .svelte file with svelte2tsx, but only if they have .svelte extension
     const tsx = files.map(v => {
@@ -165,7 +165,9 @@ export const processText = (files: { text: string, name: string, dir: string, sv
                 }
             }
 
-            fs.removeSync(workdir);
+            if (!debug){
+                fs.removeSync(workdir);
+            }
             resolve(res);
 
         }
@@ -190,50 +192,7 @@ const processDTS = (file: string) => {
         return s[0] + ", SvelteAllProps }" + s.slice(1).join("}");
     }
     return file;
-    /*
-    const s = file.split("__SvelteComponent_");
-    const name = s[0].replace("declare const ", "");
-    const propsEvtsSlot = s[1].replace("_base: {", "").split("} & {");
-    const props = propsEvtsSlot[0].split("svelte_type_writer_props:");
-    const events = propsEvtsSlot[1].split("svelte_type_writer_events:")[1];
-    const slotsExps = propsEvtsSlot[2].split("export");
-    const expor = slotsExps[1];
-    const slots0 = slotsExps[0].trim().replace("svelte_type_writer_slots:", "").split("};");
-    const slots = slots0.slice(0, slots0.length - 1).join("};");
-    const remSemAtEnd = (a: string) => {
-        const b = a.split("};");
-        return b.slice(0, b.length - 1).join("};") + "}" + b[b.length - 1];
-
-    }
-
-    const inner = "import {SvelteComponent} from 'svelte';\n" +
-        "interface " + name + "Props" + props[0].replace("\n", "").trim() +
-        remSemAtEnd(props[1].replace(/\n    /g, "\n")) + "\n" +
-        "interface " + name + "Events" + remSemAtEnd(events) + "\n" +
-        "interface " + name + "Slots" + remSemAtEnd(slots) +
-        "\n\nexport" + expor + " extends SvelteComponent {\n" +
-        "    constructor(options:{\n" +
-        "        target: Element;\n" +
-        "        anchor?: Element;\n" +
-        "        props:" + name + "Props;\n" +
-        "        hydrate?: boolean;\n" +
-        "        intro?: boolean;\n" +
-        "        $$inline?: boolean;\n" +
-        "    })\n" +
-        "    \n" +
-        "    $on<K extends keyof " + name + "Events>(event: K, handler: (e: " + name + "Events[K]) => any): ()=>void;\n" +
-        "    $set(props: Partial<" + name + "Props>): void;\n\n" +
-        "    $$prop_def: " + name + "Props;\n" +
-        "    $$events_def: " + name + "Events;\n" +
-        "    $$slot_def: " + name + "Slots;\n" +
-        "}";
-    return 'declare module "' + name + '.svelte" {\n' +
-        inner.replace(/\n/g, "\n    ") +
-        "\n}\n"
-
-*/
-
-
+    
 }
 
 
@@ -242,7 +201,10 @@ const preprocessTsx = (text: string, name: string) => {
     const b = a[1].split("createSvelte2TsxComponent");
     const c1 = b[1].split("{");
     const c = c1.slice(0, c1.length - 1).join("{");
-    const main = a[0] +
+    // fix if on:* is used;
+    const maintsx = a[0].replace(/on*=/g,"onany=");
+
+    const main = maintsx +
     "export default class " + name + " extends SvelteTypedComponent<" + name + "Props," + name + "Events," + name + "Slots>{}" +
     "const r = " + c + "();\n" +
     "const _" + name + "Props = r.props;\n" +
