@@ -78,6 +78,7 @@ import {Example1} from './Component';
 const app = new Example1(...);
 ```
     or 
+```javascript
 // ./App.svelte
 <script>
     import {Example2} from './Component';
