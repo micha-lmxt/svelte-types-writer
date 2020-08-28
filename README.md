@@ -1,26 +1,26 @@
-# svelte-type-writer
+# svelte-types-writer
 A helper script to get you started with writing typescript declaration files for svelte apps. 
 It creates typescript .d.ts based on svelte2tsx, which is used by the official vs code svelte plugin
 
 ### Usage
 
 ```javascript
-npm install --save-dev svelte-type-writer
+npm install --save-dev svelte-types-writer
 ```
 Then you can run:
 ```javascript
-node /svelte-type-writer/dist/index.js ./src/**/*.svelte --libs ./src/**/*.ts ./src/**/*.js
+node /svelte-types-writer/dist/index.js ./src/**/*.svelte --libs ./src/**/*.ts ./src/**/*.js
 ```
 Declaration files are written directly next to the .svelte files. If you prefer to have them in an extra folder, use the --out option:
 ```javascript
-node /svelte-type-writer/dist/index.js ./**/*.svelte --libs ./**/*.ts ./**/*.js --out ./types
+node /svelte-types-writer/dist/index.js ./**/*.svelte --libs ./**/*.ts ./**/*.js --out ./types
 ```
 
 Then you have first class type definitions? No. You now basically got the output of what svelte2tsx generates to make svelte types intellisense-usable for vs code and other editors in a convenient format. See next chapter "Typing Strategy" on how to use the .d.ts files. See "Intellisense" to learn, how to add comments.
 
 ### Removing and Dependencies
 
-After using svelte-type-writer you can uninstall the package and all its dependencies with one exception. Make sure to keep a (dev) dependency to svelte-typed-component, since all generated declaration files depend on it. 
+After using svelte-types-writer you can uninstall the package and all its dependencies with one exception. Make sure to keep a (dev) dependency to svelte-typed-component, since all generated declaration files depend on it. 
 ```javascript
 npm install --save-dev svelte-typed-component
 ```
@@ -32,7 +32,7 @@ A preferred solution would be to directly type the *.svelte file by adding a *.s
 
 What seems to work is the following:
 1. by file:
-    Let's say we want to have types for Example.svelte. svelte-type-writer would generate Example.d.ts in the same folder. What we then need is file Example.js in the same folder with the following content:
+    Let's say we want to have types for Example.svelte. svelte-types-writer would generate Example.d.ts in the same folder. What we then need is file Example.js in the same folder with the following content:
 ```javascript
 // ./Example.js
 import Example from './Example.svelte';
