@@ -110,7 +110,7 @@ declare const _ExampleProps: {
 ...
 ```
 
-
+[<img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" style="height: 25px !important;width: 106px !important;" >](https://buymeacoff.ee/michalmxt)
 
 
 
