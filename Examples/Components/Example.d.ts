@@ -1,4 +1,4 @@
-import { SvelteTypedComponent , SvelteAllProps } from 'svelte-typed-component';
+import { SvelteComponentTyped , SvelteAllProps } from 'svelte';
 /**
  * Here's some documentation for this component. It will show up on hover for
  * JavaScript/TypeScript projects using a LSP-compatible editor such as VSCode or
@@ -9,7 +9,7 @@ import { SvelteTypedComponent , SvelteAllProps } from 'svelte-typed-component';
  * - JSDoc/TSDoc will be respected by LSP-compatible editors.
  * - Indentation will be respected as much as possible.
  */
-export default class Example extends SvelteTypedComponent<ExampleProps, ExampleEvents, ExampleSlots> {
+export default class Example extends SvelteComponentTyped<ExampleProps, ExampleEvents, ExampleSlots> {
 }
 declare const _ExampleProps: {
     t?: number;
@@ -18,11 +18,13 @@ declare const _ExampleProps: {
     b?: string;
     bol?: boolean;
     tru?: boolean;
-    c: number;
+    /** abc */ c: number;
 } & SvelteAllProps;
 declare const _ExampleEvents: {
     click: MouseEvent;
     '*': any;
+} & {
+    [evt: string]: CustomEvent<any>;
 };
 declare const _ExampleSlots: {};
 export declare type ExampleProps = typeof _ExampleProps;

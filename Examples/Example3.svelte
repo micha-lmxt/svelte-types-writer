@@ -11,4 +11,5 @@
     <ExampleA c></ExampleA>
     <Example2 c={0}>{abc}</Example2>
     <Example c={2}></Example>
+    <abc-cde></abc-cde>
 </h1>

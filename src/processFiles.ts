@@ -207,7 +207,7 @@ const preprocessTsx = (text: string, name: string) => {
     const maintsx = a[0].replace(/on\*=/g,"onany=");
 
     const main = maintsx +
-    "export default class " + name + " extends SvelteTypedComponent<" + name + "Props," + name + "Events," + name + "Slots>"+ c2+";\n" +
+    "export default class " + name + " extends SvelteComponentTyped<" + name + "Props," + name + "Events," + name + "Slots>"+ c2+";\n" +
     "const r = " + c1[0] + "();\n" +
     "const _" + name + "Props = r.props;\n" +
     "const _" + name + "Events = r.events;\n" +
@@ -215,6 +215,6 @@ const preprocessTsx = (text: string, name: string) => {
     "export type " + name + "Props = typeof _" + name + "Props;\n" +
     "export type " + name + "Events = typeof _" + name + "Events;\n" +
     "export type " + name + "Slots = typeof _" + name + "Slots;\n";
-    return "import {SvelteTypedComponent} from 'svelte-typed-component'\n" + main;
+    return "import {SvelteComponentTyped} from 'svelte'\n" + main;
 
 }
