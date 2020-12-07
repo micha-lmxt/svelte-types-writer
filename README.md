@@ -20,6 +20,7 @@ Then you have first class type definitions? No. You now basically got the output
 
 ### Removing and Dependencies
 
+Note: the dependency to svelte-typed-component was removed with version 1.0.2 since svelte now exposes the type SvelteComponentTyped. So the following only applies to prior versions:
 After using svelte-types-writer you can uninstall the package and all its dependencies with one exception. Make sure to keep a dependency to svelte-typed-component, since all generated declaration files depend on it. 
 ```javascript
 npm install svelte-typed-component
