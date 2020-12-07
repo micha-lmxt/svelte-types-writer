@@ -175,14 +175,7 @@ export const processText = (files: { text: string, name: string, dir: string, sv
     });
     return ret;
 }
-const extratypes = `
-declare class SvelteTypedComponent<P,E,S>{
-    constructor(options:{
-        target:Element,
-        props:P
-    })
-}
-`;
+
 
 const processDTS = (file: string) => {
     const file1 = file.replace(/: false;/g,": boolean;").replace(/: true;/g,": boolean;");
