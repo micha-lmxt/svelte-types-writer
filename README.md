@@ -115,7 +115,7 @@ declare const _ExampleProps: {
 ------------------------------------
 
 
-#### For more information see [this blog post.](https://gradientdescent.de/svelte-and-typescript)
+#### For more information see [this blog post.](https://gradientdescent.de/Svelte-And-Typescript/)
 
 
 
