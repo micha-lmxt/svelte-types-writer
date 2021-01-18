@@ -115,8 +115,7 @@ declare const _ExampleProps: {
 ------------------------------------
 
 
-
-<a href="https://www.buymeacoff.ee/michalmxt" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-blue.png" alt="Buy Me A Coffee" height="41" width="174"></a>
+#### For more information see [this blog post.](https://gradientdescent.de/Svelte-And-Typescript/)
 
 
 
