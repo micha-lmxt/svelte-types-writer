@@ -11,7 +11,7 @@ if (args.length===0){
          - files1, files2... are filenames or globs (eg. ./src/**/*.svelte) for that declaration files should be generated
          - libfiles1, libfiles2... are filenames or globs of files that the transpiler should know to infer types, but no declaration file should be generated for these
          - options: 
-            --no-js: if set no wrapping javascript files are generated, see README.md,section "Typing Strategy".
+            --no-js: set to not generate forwarding javascript files, see README.md,section "Typing Strategy".
             --out <folder>: Set an output folder for the type declarations.
             --override: if existing types and js files should be overridden.
             --debug: for debugging only.

@@ -4,27 +4,24 @@ It creates typescript .d.ts based on svelte2tsx, which is used by the official v
 
 ### Usage
 
-```javascript
-npm install --save-dev svelte-types-writer
+Easiest usage is with npx 
+```bash
+npx svelte-types-writer
 ```
-Then you can run:
-```javascript
+
+to process the files directly you could run 
+```bash
 node /svelte-types-writer/dist/index.js ./src/**/*.svelte --libs ./src/**/*.ts ./src/**/*.js
 ```
-Declaration files are written directly next to the .svelte files. If you prefer to have them in an extra folder, use the --out option:
-```javascript
-node /svelte-types-writer/dist/index.js ./**/*.svelte --libs ./**/*.ts ./**/*.js --out ./types
-```
 
-Then you have first class type definitions? No. You now basically got the output of what svelte2tsx generates to make svelte types intellisense-usable for vs code and other editors in a convenient format. See next chapter "Typing Strategy" on how to use the .d.ts files. See "Intellisense" to learn, how to add comments.
+See end of file if you want to install local.
 
-### Removing and Dependencies
 
-Note: the dependency to svelte-typed-component was removed with version 1.0.2 since svelte now exposes the type SvelteComponentTyped. So the following only applies to prior versions:
-After using svelte-types-writer you can uninstall the package and all its dependencies with one exception. Make sure to keep a dependency to svelte-typed-component, since all generated declaration files depend on it. 
-```javascript
-npm install svelte-typed-component
-```
+### Options
+ --out <folder>: Set an output folder for the type declarations.
+ --override: if existing types and js files should be overridden.
+ --no-js: if set no forwarding javascript files are generated, next section "Typing Strategy".
+ --debug: for debugging only.
 
 ### Typing Strategy
 
@@ -71,7 +68,7 @@ import Example1 from 'Example1';
 import Example2 from 'Example2';
 export {Example1, Example2};
 ```     
-    now we can access the typed components eg.like that
+    then we can access the typed components eg.like that
 ```javascript
 // ./App.ts or ./App.js
 import {Example1} from './Component';
@@ -86,6 +83,7 @@ const app = new Example1(...);
 </script>
 <Example2 ...></Example2>
 ```
+By default svelte-types-writer adds .js files Example1.js & Example2.js like above. You can turn this off with the --no-js option.
 
 ### Typing and Commenting
 
@@ -114,6 +112,34 @@ declare const _ExampleProps: {
 
 ------------------------------------
 
+
+
+#### Alternative usage with local installation
+
+```javascript
+npm install --save-dev svelte-types-writer
+```
+Then you can run:
+```javascript
+node /svelte-types-writer/dist/index.js ./src/**/*.svelte --libs ./src/**/*.ts ./src/**/*.js
+```
+Declaration files are written directly next to the .svelte files. If you prefer to have them in an extra folder, use the --out option:
+```javascript
+node /svelte-types-writer/dist/index.js ./**/*.svelte --libs ./**/*.ts ./**/*.js --out ./types
+```
+
+Then you have first class type definitions? No. You now basically got the output of what svelte2tsx generates to make svelte types intellisense-usable for vs code and other editors in a convenient format. See next chapter "Typing Strategy" on how to use the .d.ts files. See "Intellisense" to learn, how to add comments.
+
+#### Removing and Dependencies for Alternative usage
+
+Note: the dependency to svelte-typed-component was removed with version 1.0.2 since svelte now exposes the type SvelteComponentTyped. So the following only applies to prior versions:
+After using svelte-types-writer you can uninstall the package and all its dependencies with one exception. Make sure to keep a dependency to svelte-typed-component, since all generated declaration files depend on it. 
+```javascript
+npm install svelte-typed-component
+```
+
+
+---
 
 #### For more information see [this blog post.](https://gradientdescent.de/Svelte-And-Typescript/)
 
