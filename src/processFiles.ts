@@ -39,7 +39,7 @@ const readFiles = (files: string[], workdir: string) => {
     return res;
 }
 
-export const processFiles = (files: string[], libs: string[], outfolder: string,debug=false) => {
+export const processFiles = (files: string[], libs: string[], outfolder: string,debug=false, nojs=false,override=false) => {
 
     if (files.length === 0) {
         return "no files";
@@ -48,7 +48,7 @@ export const processFiles = (files: string[], libs: string[], outfolder: string,
     const workdir = fs.mkdtempSync("./");
 
     const f = readFiles(files, workdir);
-    const texts = processText(f, libs, workdir,debug);
+    const texts = processText(f, libs, workdir,debug,nojs);
     if (outfolder!=="none"){
         if (!fs.existsSync(outfolder)){
             fs.mkdirSync(outfolder,{recursive:true})
@@ -58,9 +58,15 @@ export const processFiles = (files: string[], libs: string[], outfolder: string,
     const currpath = path.resolve("./");
     texts.then(v => {
         v.forEach(w => {
+
             if (outfolder === "none"){
-                console.log("Write file: " + w.name);
-                fs.writeFileSync(w.name, w.text);
+                
+                if (override || !fs.existsSync(w.name)){
+                    console.log("Write file: " + w.name);
+                    fs.writeFileSync(w.name, w.text);
+                }else{
+                    console.log("file '"+w.name+"' already exists. See option --override.")
+                }
             }else{
                 const full = path.relative(currpath, w.name);
                 const file = path.join(outfolder,full)
@@ -68,15 +74,21 @@ export const processFiles = (files: string[], libs: string[], outfolder: string,
                 if (!fs.existsSync(dir)){
                     fs.mkdirSync(dir);
                 }
-                console.log("Write file: " + file);
-                fs.writeFileSync(file, w.text);
+                if (override || !fs.existsSync(file)){
+                    console.log("Write file: " + file);
+                    fs.writeFileSync(file, w.text);
+                }else{
+                    console.log("file '"+file+"' already exists. See option --override.")
+                }
+                
+                
             }
 
 
         })
     })
 }
-export const processText = (files: { text: string, name: string, dir: string, svelte:boolean }[], libs: string[], workdir: string,debug=false) => {
+export const processText = (files: { text: string, name: string, dir: string, svelte:boolean }[], libs: string[], workdir: string,debug=false,nojs=false) => {
 
     // process the .svelte file with svelte2tsx, but only if they have .svelte extension
     const tsx = files.map(v => {
@@ -91,7 +103,12 @@ export const processText = (files: { text: string, name: string, dir: string, sv
     }
     );
 
-
+    const jswrapper: { text: string, name: string }[] = nojs  ? [] :
+        tsx.filter(v=>v.svelte).map(v=>{
+            let filename = path.join(v.dir, v.name);
+            //fs.writeFileSync(filename + ".js", `import `+ v.name + ` from './` + v.name + `.svelte';\nexport default `+v.name+`;\n `);
+            return {name: filename+".js",text:`import `+ v.name + ` from './` + v.name + `.svelte';\nexport default `+v.name+`;\n `} 
+        })
 
     const filenames = tsx.map(v => {
         let filename = path.join(workdir, v.dir, v.name);
@@ -100,8 +117,7 @@ export const processText = (files: { text: string, name: string, dir: string, sv
         }
         
         fs.writeFileSync(filename + ".tsx", v.svelte ? preprocessTsx(v.text, v.name) : v.text);
-        
-        
+            
         return { filename, from: path.join(v.dir, v.name) };
     });
 
@@ -126,22 +142,27 @@ export const processText = (files: { text: string, name: string, dir: string, sv
 
     // compile tsx file with tsc but only further process declaration file
     const ret = new Promise<{ text: string, name: string }[]>((resolve, reject) => {
-        let shims = "./node_modules/svelte2tsx/svelte-shims.d.ts";
+        let shims = require.resolve("svelte2tsx/svelte-shims.d.ts")
+        
+        
+        /* this is probably not needed anymore */
         if (!fs.existsSync(shims)){
-            shims = "./node_modules/svelte-type-writer/node_modules/svelte2tsx/svelte-shims.d.ts";
+            shims = "./node_modules/svelte2tsx/svelte-shims.d.ts";
+            if (!fs.existsSync(shims)){
+                shims = "./node_modules/svelte-type-writer/node_modules/svelte2tsx/svelte-shims.d.ts";
+            }
         }
         const tscOptions = ["--emitDeclarationOnly", "--declaration"]
             .concat(filenames.map(v => v.filename + ".tsx"))
             //.concat(["extratypes.d.ts"])
             .concat(libs.map(v => path.join(workdir, v)))
             .concat([shims]);
-        console.log(tscOptions);
+        if (debug){console.log(tscOptions)};
         const sp = spawn("tsc", tscOptions, { cwd: "./" });
 
         const cont = () => {
 
-            const res: { text: string, name: string }[] = [];
-
+            const res = jswrapper;
 
             for (let file of filenames) {
                 const dtsfile = file.filename + ".d.ts";

@@ -1,4 +1,4 @@
-import { SvelteComponentTyped , SvelteAllProps } from 'svelte';
+import { SvelteComponentTyped } from 'svelte';
 /**
  * Here's some documentation for this component. It will show up on hover for
  * JavaScript/TypeScript projects using a LSP-compatible editor such as VSCode or

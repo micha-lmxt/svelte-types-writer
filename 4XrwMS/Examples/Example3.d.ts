@@ -4,7 +4,7 @@ export default class Example3 extends SvelteComponentTyped<Example3Props, Exampl
 }
 declare const _Example3Props: {
     abc: "a" | "b" | "c";
-    x?: boolean;
+    x?: true;
 };
 declare const _Example3Events: {
     [evt: string]: CustomEvent<any>;

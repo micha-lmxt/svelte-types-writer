@@ -1,10 +1,10 @@
 {
   "name": "svelte-types-writer",
-  "version": "1.0.4",
+  "version": "1.2.0",
   "description": "Export typescript types based form .svelte files based on svelte2tsx, which is used on vs code language-tools plugin.",
   "main": "dist/index.js",
   "bin":{
-    "svelte-types-writer":"dist/index.js"
+    "svelte-types-writer":"runnpx.js"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
